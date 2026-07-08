@@ -1,0 +1,54 @@
+.section {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+  gap: var(--gutter);
+  /* Each column's own track width at exactly 1440px (the desktop
+     breakpoint, where --gutter maxes out): (1368px section - 36px gap) /
+     2 = 666px. Reused below as both columns' max-width, so text fully
+     fills its track up to 1440px and simply stops growing past it,
+     instead of stretching to whatever a wider grid track happens to be. */
+  --col-max-width: 666px;
+}
+
+@media (min-width: 768px) {
+  /* Equal 1fr tracks — column 2 always starts at exactly the horizontal
+     midpoint of .section, regardless of how narrow column 1's own
+     content is. min-width: 0 on .left/.body (below) is what actually
+     makes that hold: without it, a track's content can force that track
+     wider than its fr share, dragging the midpoint along with it. */
+  .section {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--col-max-width);
+  min-width: 0;
+  gap: var(--space-3xs);
+}
+
+.label {
+  color: var(--color-fg);
+}
+
+.summary {
+  color: var(--color-fg-muted);
+}
+
+.body {
+  width: 100%;
+  max-width: var(--col-max-width);
+  min-width: 0;
+  color: var(--color-fg);
+  /* Matches the metadata block's list/groupLabel font-size (--text-sm) —
+     only the size, not the .bodyText role's weight/tracking/leading. */
+  font-size: var(--text-sm);
+}
+
+.body > * + * {
+  margin-top: 1em;
+}

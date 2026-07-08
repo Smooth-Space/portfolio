@@ -1,0 +1,268 @@
+@import "@radix-ui/colors/sand.css";
+
+:root {
+  /* ---------------------------------------------------------------------
+     Type scale — fluid clamp() primitives, minor-third-ish (~1.2), tuned
+     to hit exact px targets at a 400px (mobile) -> 1400px (desktop)
+     viewport window. Formula per step:
+       slope = (max-min)/1000; A = 1.4*min - 0.4*max (px, then ->rem)
+       clamp(minRem, Arem + slope*100 vw, maxRem)
+     Mobile min / desktop max (px): 2xs 13/14, xs 15/16, sm 17/19,
+     md 19/24, lg 24/32, xl 30/40, 2xl 38/56.
+     ------------------------------------------------------------------- */
+  --text-2xs: clamp(0.8125rem, 0.7875rem + 0.1vw, 0.875rem);
+  --text-xs: clamp(0.9375rem, 0.9125rem + 0.1vw, 1rem);
+  --text-sm: clamp(1.0625rem, 1.0125rem + 0.2vw, 1.1875rem);
+  --text-md: clamp(1.1875rem, 1.0625rem + 0.5vw, 1.5rem);
+  --text-lg: clamp(1.5rem, 1.3rem + 0.8vw, 2rem);
+  --text-xl: clamp(1.875rem, 1.625rem + 1vw, 2.5rem);
+  --text-2xl: clamp(2.375rem, 1.925rem + 1.8vw, 3.5rem);
+
+  /* Tracking (letter-spacing) and leading (line-height) per step. */
+  --tracking-2xs: 0em;
+  --leading-2xs: 1.4;
+  --tracking-xs: 0em;
+  --leading-xs: 1.5;
+  --tracking-sm: -0.01em;
+  --leading-sm: 1.5;
+  --tracking-md: -0.03em;
+  --leading-md: 1.1;
+  --tracking-lg: -0.03em;
+  --leading-lg: 1.1;
+  --tracking-xl: -0.04em;
+  --leading-xl: 1.05;
+  --tracking-2xl: -0.04em;
+  --leading-2xl: 1.0;
+
+  /* Semantic type roles — alias the primitive scale, never a literal. */
+  --text-display: var(--text-2xl);
+  --text-heading: var(--text-lg);
+  --text-body: var(--text-md);
+  --text-caption: var(--text-2xs);
+
+  /* ---------------------------------------------------------------------
+     Spacing scale — static steps (px).
+     ------------------------------------------------------------------- */
+  --space-3xs: 4px;
+  --space-2xs: 8px;
+  --space-xs: 12px;
+  --space-sm: 20px;
+  --space-md: 36px;
+  --space-lg: 64px;
+  --space-xl: 96px;
+  --space-2xl: 128px;
+  --space-3xl: 208px;
+
+  /* --section-y / --header-y stay fluid between two named steps, same
+     400->1400 viewport window as the type scale. --gutter is different:
+     a step function (see the @media overrides below this block), not a
+     clamp() interpolation — 8px up to 1919px, 16px 1920-2559px, 24px at
+     2560px+. */
+  --gutter: 8px;
+  --section-y: clamp(var(--space-lg), 2.4rem + 6.4vw, var(--space-2xl));
+  --header-y: clamp(var(--space-xl), 3.2rem + 11.2vw, var(--space-3xl));
+
+  /* Color — Radix Sand, mapped by step semantics. Only steps 11/12 are
+     used for text; 9-10 are never used for small text (see Radix a11y note). */
+  --color-bg: var(--sand-1);
+  --color-bg-subtle: var(--sand-2);
+  /* One step up from --color-bg-subtle — a distinct "card surface" role
+     (currently just NextProjectCard), not a replacement for --subtle's
+     existing uses (chips, media placeholder backgrounds, etc). */
+  --color-bg-card: var(--sand-3);
+  --color-border: var(--sand-6);
+  --color-fg: var(--sand-12);
+  --color-fg-muted: var(--sand-11);
+
+  /* Radius — the single 4px value used by every media frame, chip, and
+     button on the site. */
+  --radius-xs: 4px;
+
+  /* Font */
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+
+  --container-max: 1440px;
+
+  /* The "SmoothSpace" wordmark scales continuously with its own
+     container's width (fit 100%) — cqw, not vw: vw is relative to the
+     raw viewport and knows nothing about the --gutter padding around it,
+     which is exactly what caused it to overflow (295px/1728px desktop
+     etc. are ~96.6% of the viewport, wider than the ~95.8% left after
+     two --gutter insets). cqw is relative to the nearest ancestor with
+     container-type set — pair this with .wordmark's container (see
+     page.module.css / MobileMenuOverlay.module.css) so it's always
+     relative to the actual available width, whatever that is.
+     Coefficient: Figma's rendered-width/font-size ratio is ~5.65-5.66
+     at all three reference sizes (desktop/tablet/phone), consistently —
+     100/5.66 = ~17.67cqw for an exact fit; 17.5cqw leaves a small safety
+     margin against cross-browser font-metric variance. */
+  --wordmark-size: 17.5cqw;
+}
+
+/* --gutter step function — later rule wins at 2560px+, where both this
+   and the 1920px query match. Ripples everywhere --gutter is used (page
+   margins, nav padding, the 12-col grid's own gap, detail-page block
+   gaps, feed gaps, scrubber corner inset, mobile menu spacing) with no
+   per-component changes needed. */
+@media (min-width: 1920px) {
+  :root {
+    --gutter: 16px;
+  }
+}
+
+@media (min-width: 2560px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--gutter);
+  /* Confirmed via document.scrollingElement — this, not body, is the
+     actual scroll root. macOS overlay scrollbars appear/disappear on
+     scroll; without this, that triggers a scrollbar-gutter reflow/repaint
+     (the "flash" of the track region briefly reading full-height). This
+     reserves the gutter permanently so appearing/disappearing never
+     changes it. */
+  scrollbar-gutter: stable;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: var(--color-fg);
+  background: var(--color-bg);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  letter-spacing: var(--tracking-md);
+  line-height: var(--leading-md);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+/* Typography roles */
+.display {
+  font-size: var(--text-display);
+  letter-spacing: var(--tracking-2xl);
+  line-height: var(--leading-2xl);
+}
+
+.heading {
+  font-size: var(--text-heading);
+  letter-spacing: var(--tracking-lg);
+  line-height: var(--leading-lg);
+}
+
+.bodyText {
+  font-size: var(--text-body);
+  letter-spacing: var(--tracking-md);
+  line-height: var(--leading-md);
+}
+
+.caption {
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-2xs);
+  line-height: var(--leading-2xs);
+}
+
+/* The giant brand wordmark — home hero + mobile menu overlay. Letter
+   spacing is -0.08em (not one of the type-scale tracking steps; Figma
+   specs this wordmark at a tighter tracking than any type role).
+   font-weight is explicit because the hero renders this on an <h1> —
+   browsers apply bold to headings by default in the UA stylesheet, and
+   nothing here was overriding it. The overlay uses a <p> (UA default:
+   normal), which is why only the hero was ever bold. */
+.wordmark {
+  font-size: var(--wordmark-size);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.08em;
+  white-space: nowrap;
+}
+
+/* Layout primitives */
+.container {
+  display: block;
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.blocks {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--section-y);
+}
+
+/* Site-wide 12-column grid — 4 cols under 768px, 8 cols 768-1199px, 12
+   cols at 1200px+. Column gap and outer margins both reuse --gutter (no
+   new spacing token), matching .container's existing margin behavior.
+   Children opt into a span via .col + a --col-span-* custom property;
+   unset defaults to full width at every breakpoint, so a plain .col
+   with no overrides just behaves like .container. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+  gap: var(--gutter);
+  padding-inline: var(--gutter);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .grid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+/* --col-start-* defaults to auto (normal left-to-right placement); set it
+   explicitly (e.g. 3) to place a span away from column 1, for a centered
+   column like text blocks on the detail page. */
+.col {
+  grid-column: var(--col-start-mobile, auto) / span var(--col-span-mobile, 4);
+}
+
+@media (min-width: 768px) {
+  .col {
+    grid-column: var(--col-start-tablet, auto) / span var(--col-span-tablet, 8);
+  }
+}
+
+@media (min-width: 1200px) {
+  .col {
+    grid-column: var(--col-start-desktop, auto) / span var(--col-span-desktop, 12);
+  }
+}

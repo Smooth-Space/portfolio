@@ -1,0 +1,54 @@
+.overlay {
+  /* inset: 0 on a fixed element already pins it to the exact viewport
+     box (top/bottom = 0), so height comes from that directly — no vh/dvh
+     unit needed, and no mobile-browser-chrome ambiguity. No wordmark and
+     no toggle live in here (Close is Nav's own fixed element, sitting on
+     top via z-index) — per Figma 5:181 the overlay shows only nav links
+     and a social link, each independently positioned below. */
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--color-bg);
+}
+
+/* Per Figma's measured position — roughly 29% down the screen, not
+   stacked under a header (there is none) and not vertically centered. */
+.links {
+  position: absolute;
+  top: 29%;
+  left: var(--gutter);
+  right: var(--gutter);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+/* Same size as the hero wordmark (--text-display, maxing at 56px) with
+   its same tight tracking (-0.08em, tighter than any standard tracking
+   step — see .wordmark in globals.css) — not the standard .display
+   utility class, which uses the looser --tracking-2xl (-0.04em). */
+.link {
+  font-size: var(--text-display);
+  letter-spacing: -0.08em;
+  line-height: var(--leading-2xl);
+  color: var(--color-fg);
+}
+
+/* Near the very bottom, inset by --gutter on every edge — renders
+   nothing at all when there are no socials (see MobileMenuOverlay.tsx). */
+.socials {
+  position: absolute;
+  bottom: var(--gutter);
+  left: var(--gutter);
+  right: var(--gutter);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.social {
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-xs);
+  line-height: var(--leading-xs);
+  color: var(--color-fg);
+}

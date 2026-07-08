@@ -1,0 +1,22 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: var(--space-sm);
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--space-3xs);
+}
+
+.title {
+  color: var(--color-fg);
+}
+
+.intro {
+  color: var(--color-fg-muted);
+}

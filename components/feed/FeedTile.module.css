@@ -1,0 +1,43 @@
+.tile {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 calc((100% - (var(--per-row) - 1) * var(--gutter)) / var(--per-row));
+  min-width: 0;
+  gap: var(--space-3xs);
+  color: inherit;
+}
+
+.frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  background: var(--color-bg-subtle);
+}
+
+.frame > * {
+  position: absolute;
+  inset: 0;
+}
+
+/* Hidden by default but never removed from layout — opacity only, never
+   display:none, so the caption's height stays reserved and hovering
+   never reflows the clothesline rows. */
+.caption {
+  color: var(--color-fg-muted);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.tile:hover .caption,
+.tile:focus-visible .caption {
+  opacity: 1;
+}
+
+/* Touch/no-hover devices have no hover state to reveal the caption with,
+   so show it always. */
+@media (hover: none) {
+  .caption {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,125 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* dvh accounts for mobile browser chrome (address bar etc.) that vh
+     doesn't; falls back to vh on browsers that don't support it. */
+  min-height: 100dvh;
+  padding: var(--gutter);
+  /* Below 1200px, Nav's fixed "Menu" toggle sits in the same top-right
+     corner as this wordmark row (Nav has no reserved layout space of its
+     own — it floats on top of the page) — extra top clearance here keeps
+     the giant wordmark's top edge clear of the toggle instead of the two
+     visually colliding. Reverts to plain --gutter at desktop, where Nav
+     shows text links instead of the toggle and there's no collision. */
+  padding-top: calc(var(--gutter) + var(--space-lg));
+}
+
+/* Establishes the container that .wordmark's cqw font-size (see
+   globals.css) is actually relative to — this container's width is the
+   real available width (already net of .hero's own --gutter padding),
+   which is what was missing when the wordmark used vw directly. */
+.wordmarkContainer {
+  width: 100%;
+  flex-shrink: 0;
+  container-type: inline-size;
+}
+
+.wordmarkRow {
+  color: var(--color-fg);
+}
+
+/* margin-top: auto pushes the whole intro+square unit down to sit flush
+   with the hero's bottom edge, absorbing all the remaining vertical
+   space as one gap above it — this is what actually produces the large
+   wordmark-to-lower-band gap from the Figma reference, at any viewport
+   height (previously this was flex:1 with the content sitting at ITS
+   OWN top, which put the extra space in the wrong place — below the
+   content instead of above it). */
+.lowerBand {
+  position: relative;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--gutter);
+}
+
+.introPosition {
+  width: 100%;
+}
+
+.introContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 405px;
+}
+
+.introPrimary {
+  color: var(--color-fg);
+}
+
+.introSecondary {
+  color: var(--color-fg-muted);
+}
+
+.viewWork {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  padding: var(--space-2xs) calc(var(--space-2xs) * 2);
+  border-radius: var(--radius-xs);
+  background: var(--color-fg);
+  color: var(--color-bg);
+}
+
+.squareWrap {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .introContent {
+    gap: var(--space-md);
+  }
+}
+
+@media (min-width: 1200px) {
+  .hero {
+    padding-top: var(--gutter);
+  }
+
+  /* At desktop the square becomes absolutely positioned (out of flow),
+     so it no longer contributes to .lowerBand's own height — without an
+     explicit min-height here, .lowerBand would only be as tall as
+     .introPosition (the one remaining in-flow child), and margin-top:
+     auto would push it too far down, letting the square overshoot past
+     the hero's bottom edge. This keeps .lowerBand at least as tall as
+     the square, so the whole unit (and the square's own bottom edge)
+     lands flush with the hero's bottom, matching Figma's bottom-right
+     placement. */
+  .lowerBand {
+    min-height: clamp(420px, 30vw, 620px);
+  }
+
+  /* Grid-anchored, not wordmark-relative: right edge sits on the site
+     grid's right margin line, bottom edge sits --gutter from the
+     viewport's bottom edge, at every width — no drift. .lowerBand's
+     width already equals the grid's own content width (same --gutter
+     inset on both sides), so right: 0 here lands exactly on that margin
+     line for free. Its bottom edge coincides with .lowerBand's own
+     bottom edge, which margin-top: auto + the min-height above already
+     push flush with .hero's bottom padding edge — so bottom: 0 lands
+     exactly --gutter above the viewport's bottom edge. Anchoring from
+     the bottom (instead of the old top: 0) also still gives the square
+     the same top edge as .introPosition for free, since .lowerBand's
+     height exactly equals the square's own height. */
+  .squareWrap {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: clamp(420px, 30vw, 620px);
+  }
+}

@@ -1,0 +1,53 @@
+.nav {
+  position: fixed;
+  /* --pill-rest-offset is local (not a global spacing token — this is
+     one component's own tuning knob) and split by breakpoint below, so
+     each value can be adjusted independently without touching the other.
+     Below 1200px: --space-xl (96px), generous enough to clear a mobile
+     browser's bottom toolbar/home-indicator by design, rather than
+     guessing a specific device's chrome height. At 1200px+: a modest
+     28px — desktop has no browser chrome to clear, and --space-xl read
+     as floating too high there. Both add env(safe-area-inset-bottom) on
+     top for the iPhone notch/home-indicator safe area specifically
+     (falls back to 0px wherever unsupported, and is always 0 on desktop
+     anyway — requires viewport-fit: cover, see app/layout.tsx, or Safari
+     never reports a nonzero inset at all). No static bottom/100vh
+     involved: position: fixed already resolves against the viewport
+     (confirmed — no ancestor here sets transform/filter/contain, the
+     only thing that would redirect a fixed element's containing block
+     away from the viewport), so there's no dvh/svh-aware wrapper needed
+     on top of this. */
+  --pill-rest-offset: var(--space-xl);
+  bottom: calc(var(--pill-rest-offset) + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  max-width: calc(100vw - 2 * var(--gutter));
+  overflow-x: auto;
+  gap: var(--space-3xs);
+  padding: var(--space-3xs);
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+@media (min-width: 1200px) {
+  .nav {
+    --pill-rest-offset: 28px;
+  }
+}
+
+.link {
+  padding: var(--space-2xs) var(--space-sm);
+  border-radius: 999px;
+  font-size: var(--text-caption);
+  color: var(--color-fg-muted);
+  white-space: nowrap;
+}
+
+.linkActive {
+  color: var(--color-bg);
+  background: var(--color-fg);
+}

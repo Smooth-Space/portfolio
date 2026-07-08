@@ -1,0 +1,19 @@
+/* Fills whatever width its parent provides — the home hero's
+   .squareWrap sizes it per breakpoint (~100% below 1200px, a fixed-ish
+   ~525px clamp at desktop). */
+.scrubber {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  background: var(--color-bg-subtle);
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

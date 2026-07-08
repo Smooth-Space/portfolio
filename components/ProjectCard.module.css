@@ -1,0 +1,63 @@
+.tile {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  color: inherit;
+}
+
+.frame {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  /* Defensive/explicit — MediaSlot's own .slot (its sole child here)
+     already clips overflow with the same rounded corners, so the
+     scaled-up default below never visually spills past the tile. */
+  overflow: hidden;
+}
+
+/* Default 1.03 zoom settles to a natural 1.00 on hover — the "settle"
+   reads as the inviting response, not a zoom-in. Targets .slot's own
+   child (MediaSlot's rendered img/video) via plain DOM structure, not a
+   class name, so MediaSlot itself stays untouched/unaware of this — it's
+   scoped to project-index tiles only. */
+.frame > div > * {
+  transform: scale(1.03);
+  transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.tile:hover .frame > div > *,
+.tile:focus-visible .frame > div > * {
+  transform: scale(1);
+}
+
+/* margin-top (not .tile's gap) is what separates the frame from the
+   title — moved here so .title and .services (below) can sit flush
+   together with zero space between them. */
+.title {
+  color: var(--color-fg);
+  margin-top: var(--space-3xs);
+}
+
+/* Plain text, not a chip (see ServiceChips — unchanged, still used on the
+   detail page header) — same type style as .title, distinguished only by
+   color. Always rendered (when a project has services at all) so its
+   line is permanently reserved; only opacity toggles, never display, so
+   nothing shifts when it fades in. Flush against .title — no gap. */
+.services {
+  color: var(--color-fg-muted);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tile:hover .services,
+.tile:focus-visible .services {
+  opacity: 1;
+}
+
+/* Touch/no-hover devices have no hover state to reveal services with, so
+   show them always — same fallback FeedTile's caption uses. */
+@media (hover: none) {
+  .services {
+    opacity: 1;
+  }
+}

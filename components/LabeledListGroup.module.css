@@ -1,0 +1,31 @@
+/* flex: 1 / min-width: 0 assume this sits in a flex row (desktop) or
+   column (mobile) — see app/about/page.module.css, the one place this is
+   currently used. */
+.group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: var(--space-3xs);
+}
+
+/* Plain — no brackets, uppercase, or monospace; same size/weight family
+   as the list below it, distinguished only by color (the site's
+   established "hierarchy through color, not decoration" convention). */
+.label {
+  color: var(--color-fg);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-sm);
+  line-height: var(--leading-sm);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  list-style: none;
+  color: var(--color-fg-muted);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-sm);
+  line-height: var(--leading-sm);
+}

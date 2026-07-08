@@ -1,0 +1,29 @@
+/* Shared by the project index and the detail page's related-projects row
+   — the single source of truth for "how many tiles per row at each
+   breakpoint." Uniform grid — every tile is the same 1x1 cell (see
+   ProjectCard), so there's no span/auto-flow logic to reason about here
+   at all. */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+  /* Column gap stays at the equal-spacing gutter (= page margins).
+     Row gap uses --section-y instead — it's already the fluid role that
+     maxes at --space-2xl (128px), scaling down proportionally at smaller
+     viewports via the same clamp() window as every other spacing role,
+     rather than jumping straight to 128px on mobile. */
+  column-gap: var(--gutter);
+  row-gap: var(--section-y);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

@@ -1,0 +1,104 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* Above the mobile menu overlay (z-index 100) — the toggle stays
+     visible and clickable in exactly the same spot whether the overlay
+     is open or closed, since it's the same element either way. */
+  z-index: 110;
+  display: flex;
+  align-items: flex-start;
+  padding: var(--gutter);
+  background: transparent;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  /* Without this, a full-viewport-width position: fixed element isn't
+     guaranteed its own compositing layer — it can get swept into the
+     ordinary document repaint on every scroll tick even though it never
+     visually moves relative to the viewport, which is exactly what
+     DevTools paint-flashing showed happening here. This forces Chromium
+     to promote it once, up front, so plain scrolling (with .navHidden
+     not toggling) never needs to repaint it at all — only an actual
+     hide/show transition does. Right up against the viewport's right
+     edge (right: 0) is also exactly where a vertical scrollbar renders,
+     which is the likely link to the scrollbar-region flash. */
+  will-change: transform;
+}
+
+/* Slides fully off-screen while scrolling down. */
+.navHidden {
+  transform: translateY(-100%);
+}
+
+/* Only kicks in once scrolled away from the very top, so the nav still
+   sits transparent on the page/hero at rest — matches .navHidden's own
+   scroll-position logic (both flip on the same "at top" check). */
+.navScrolled {
+  background: var(--color-bg);
+}
+
+.wordmark {
+  font-size: var(--text-md);
+  letter-spacing: var(--tracking-md);
+  line-height: var(--leading-md);
+  color: var(--color-fg);
+}
+
+/* Always pushes the links/toggle group to the right, whether or not the
+   small internal-page wordmark is present on the left. */
+.linksGroup {
+  margin-left: auto;
+  display: flex;
+  align-items: flex-start;
+}
+
+.desktopLinks {
+  display: none;
+  align-items: center;
+  gap: 1em;
+  font-size: var(--text-md);
+  letter-spacing: var(--tracking-md);
+  line-height: var(--leading-md);
+  color: var(--color-fg-muted);
+}
+
+.link {
+  color: inherit;
+}
+
+.menuButton {
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mobileToggle {
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-xs);
+  line-height: var(--leading-xs);
+  color: var(--color-fg-muted);
+}
+
+/* "Close" reads --color-fg (full-strength, not the muted --color-fg-muted
+   "Menu" uses) — the overlay is now a light --color-bg background, so
+   this no longer needs to flip to light text like it did against the old
+   dark takeover. */
+.mobileToggleOpen {
+  color: var(--color-fg);
+}
+
+@media (min-width: 1200px) {
+  .desktopLinks {
+    display: flex;
+  }
+
+  .mobileToggle {
+    display: none;
+  }
+}

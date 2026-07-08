@@ -1,0 +1,38 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Same style as ProjectMetadataBlock's "Project credits" label. */
+.label {
+  color: var(--color-fg);
+}
+
+/* Explicit card-count-per-row for this component only — 1 mobile, 2
+   tablet, 4 desktop, always exactly one row. ProjectGrid.module.css's
+   shared column counts (1/2/4) already match, so only visibility needs
+   controlling: RelatedProjects always fetches 4 candidates, and each
+   breakpoint here hides the rest. display: flex re-shows a tile (matches
+   ProjectCard's own .tile display value) since a later, non-media rule
+   doesn't automatically cancel an earlier unconditional one — each step
+   has to explicitly restate what becomes visible again. */
+.row > a:nth-child(n + 2) {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .row > a:nth-child(2) {
+    display: flex;
+  }
+
+  .row > a:nth-child(n + 3) {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .row > a:nth-child(n + 3) {
+    display: flex;
+  }
+}

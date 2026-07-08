@@ -1,0 +1,25 @@
+/* Clothesline row layout — not masonry. A fixed number of tiles per row
+   (--per-row), each sized to an equal share of the row's width via
+   flex-basis. align-items: flex-start gives every tile in a row the same
+   top edge; each hangs down to its own native-ratio height, so bottoms
+   are ragged and shorter tiles leave whitespace beneath them. */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--gutter);
+  width: 100%;
+  --per-row: 2;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    --per-row: 4;
+  }
+}
+
+@media (min-width: 1200px) {
+  .grid {
+    --per-row: 7;
+  }
+}

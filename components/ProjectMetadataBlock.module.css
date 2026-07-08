@@ -1,0 +1,69 @@
+.metadata {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+  gap: var(--gutter);
+  /* Outer .col is full 12-of-12, identical to TextBlock's — same section
+     width at 1440px (1368px), so the same --col-max-width value applies:
+     (1368px - 36px gap) / 2 = 666px per column. Kept equal to
+     TextBlock's own --col-max-width on purpose — this is the same
+     two-column system, just with different content inside. */
+  --col-max-width: 666px;
+}
+
+@media (min-width: 768px) {
+  .metadata {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Mirrors textBlock's .left column structure for visual consistency. */
+.left {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--col-max-width);
+  min-width: 0;
+}
+
+.label {
+  color: var(--color-fg);
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--col-max-width);
+  min-width: 0;
+  gap: var(--space-sm);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.groupLabel {
+  color: var(--color-fg);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-sm);
+  line-height: var(--leading-sm);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  list-style: none;
+  color: var(--color-fg-muted);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-sm);
+  line-height: var(--leading-sm);
+}
+
+.link {
+  color: var(--color-fg-muted);
+  text-decoration: underline;
+}

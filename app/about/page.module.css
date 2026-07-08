@@ -1,0 +1,22 @@
+/* Same readability backstop as TextBlock/ProjectMetadataBlock: track
+   width at exactly 1440px under a full 12-col section — (1368px - 36px
+   gap) / 2 = 666px. There's no second column here, but capping the bio
+   at the same value keeps line length consistent with the rest of the
+   site rather than stretching to the full 12-col width. */
+.bio {
+  max-width: 666px;
+  color: var(--color-fg);
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .groups {
+    flex-direction: row;
+    gap: var(--gutter);
+  }
+}

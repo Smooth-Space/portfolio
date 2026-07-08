@@ -1,0 +1,53 @@
+.grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr;
+  gap: var(--gutter);
+}
+
+.tallCell {
+  order: 1;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 4 / 5;
+}
+
+.stackedCol {
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  gap: var(--gutter);
+}
+
+/* Mobile: every slot reserves its own box independently, tall image first. */
+.stackedCol > * {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+
+  .grid[data-tall='right'] .tallCell {
+    order: 2;
+  }
+
+  .grid[data-tall='right'] .stackedCol {
+    order: 1;
+  }
+
+  /* Desktop: the stacked column stretches to match the tall cell's
+     aspect-ratio-driven row height, then splits it in half via flex —
+     no fixed ratio needed since the grid row already reserves the space. */
+  .stackedCol > * {
+    aspect-ratio: auto;
+    flex: 1 1 0;
+    min-height: 0;
+  }
+}
