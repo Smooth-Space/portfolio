@@ -11,13 +11,14 @@ export default async function ProjectsIndexPage() {
     <main style={{paddingTop: 'var(--header-y)', paddingBottom: 'var(--section-y)'}}>
       <div className="grid">
         <div className={`col ${styles.grid}`}>
-          {projects.map((project) => (
+          {projects.map((project, index) => (
             <ProjectCard
               key={project._id}
               slug={project.slug}
               title={project.title}
               thumbnail={project.thumbnail}
               services={project.services}
+              index={index}
             />
           ))}
         </div>

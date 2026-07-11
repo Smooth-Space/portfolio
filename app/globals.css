@@ -83,6 +83,20 @@
   --section-y: clamp(var(--space-lg), 2.4rem + 6.4vw, var(--space-2xl));
   --header-y: clamp(var(--space-xl), 3.2rem + 11.2vw, var(--space-3xl));
 
+  /* ---------------------------------------------------------------------
+     Entry-reveal motion — the ONE fade+rise language for every
+     scroll-triggered reveal on the site (project card tiles, media block
+     slots). Single source of truth: tune here, not in a per-component
+     copy. Paired with the .entryReveal/.entryRevealVisible utility
+     classes below and the useEntryReveal hook (hooks/useEntryReveal.ts),
+     which does the IntersectionObserver trigger-once + prefers-reduced-
+     motion work. --entry-delay is NOT set here — it's written inline,
+     per-element, by that hook (row/slot-relative stagger). */
+  --entry-duration-opacity: 1s;
+  --entry-duration-transform: 2s;
+  --entry-easing: cubic-bezier(0.16, 1, 0.3, 1);
+  --entry-distance: 56px;
+
   /* Color — Radix Sand, mapped by step semantics. Only steps 11/12 are
      used for text; 9-10 are never used for small text (see Radix a11y note). */
   --color-bg: var(--sand-1);
@@ -225,6 +239,34 @@ video {
   font-size: var(--text-caption);
   letter-spacing: var(--tracking-2xs);
   line-height: var(--leading-2xs);
+}
+
+/* Shared scroll-triggered fade+rise reveal (see the --entry-* tokens
+   above and hooks/useEntryReveal.ts for the trigger logic). Composite-
+   only properties — opacity/transform — so nothing reflows as an
+   element reveals; the element's final layout box is reserved from
+   first paint. --entry-delay is written inline by the hook, per
+   element; the 0s fallback covers anything that forgets to set it. */
+.entryReveal {
+  opacity: 0;
+  transform: translateY(var(--entry-distance));
+  transition:
+    opacity var(--entry-duration-opacity) var(--entry-easing) var(--entry-delay, 0s),
+    transform var(--entry-duration-transform) var(--entry-easing) var(--entry-delay, 0s);
+  will-change: opacity, transform;
+}
+
+.entryRevealVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entryReveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* The giant brand wordmark — home hero + mobile menu overlay. Letter

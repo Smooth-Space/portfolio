@@ -21,13 +21,14 @@ export function RelatedProjects({projects}: RelatedProjectsProps) {
       <div className={`col ${styles.section}`}>
         <p className={`heading ${styles.label}`}>More Projects</p>
         <div className={`${gridStyles.grid} ${styles.row}`}>
-          {projects.map((project) => (
+          {projects.map((project, index) => (
             <ProjectCard
               key={project._id}
               slug={project.slug}
               title={project.title}
               thumbnail={project.thumbnail}
               services={project.services}
+              index={index}
             />
           ))}
         </div>

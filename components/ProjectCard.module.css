@@ -1,3 +1,7 @@
+/* Entry-reveal animation (fade+rise on first scroll into view) lives in
+   the shared .entryReveal/.entryRevealVisible classes in globals.css —
+   composed onto this element in ProjectCard.tsx alongside .tile, which
+   only carries this tile's own layout. */
 .tile {
   display: flex;
   flex-direction: column;

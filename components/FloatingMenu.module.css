@@ -39,15 +39,57 @@
   }
 }
 
+/* The sliding active-segment indicator — a single element clip-path'd
+   down to whichever link is active (see FloatingMenu.tsx), instead of a
+   background toggled per-link. clip-path (not left/width) so the slide
+   is a compositor-only paint with no layout reflow. Sized to the nav's
+   full scrollable content width (set inline by the component) rather
+   than `inset: 0`, so the clip math stays correct even if the link row
+   ever overflows and scrolls horizontally.
+
+   top/height are ALSO set inline (to the active link's own offsetTop/
+   offsetHeight, not nav's full padded height) — border-radius: 999px
+   clamps to half of THIS element's own height, so if the pill were
+   nav's full height (taller than a link's own padded box, since it'd
+   include nav's own padding too) the rounded ends would claim a
+   proportionally bigger radius and visually eat into the horizontal
+   padding, making the pill read as hugging the text even though the
+   link's own padding never changed. Matching the link's own box height
+   exactly keeps the same corner proportions the old per-link background
+   had. Starts fully collapsed at the left edge (zero width) until JS
+   positions it under the first active link. */
+.pill {
+  position: absolute;
+  left: 0;
+  z-index: 0;
+  border-radius: 999px;
+  background: var(--color-fg);
+  clip-path: inset(0 100% 0 0 round 999px);
+  transition: clip-path 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
 .link {
+  position: relative;
+  z-index: 1;
   padding: var(--space-2xs) var(--space-sm);
   border-radius: 999px;
   font-size: var(--text-caption);
   color: var(--color-fg-muted);
   white-space: nowrap;
+  transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .linkActive {
   color: var(--color-bg);
-  background: var(--color-fg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill {
+    transition: none;
+  }
+
+  .link {
+    transition: none;
+  }
 }
