@@ -34,11 +34,24 @@
   --tracking-2xl: -0.04em;
   --leading-2xl: 1.0;
 
+  /* Dedicated leading for the shared "small body" role below — 1.4 for
+     comfortable paragraph reading. Kept separate from --leading-md
+     (1.1) rather than changing that token in place, since --leading-md
+     still drives the global body baseline and the internal-page small
+     wordmark logo, neither of which are part of this unification. */
+  --leading-body-sm: 1.4;
+
   /* Semantic type roles — alias the primitive scale, never a literal. */
   --text-display: var(--text-2xl);
   --text-heading: var(--text-lg);
   --text-body: var(--text-md);
   --text-caption: var(--text-2xs);
+  /* The unified "small body" role — every body-copy consumer site-wide
+     (detail-page paragraphs, nav links, project card title/services,
+     metadata credits, home intro, About bio) renders at
+     this exact size/tracking/leading. Aliases --text-sm rather than
+     introducing a new literal. */
+  --text-body-sm: var(--text-sm);
 
   /* ---------------------------------------------------------------------
      Spacing scale — static steps (px).
@@ -59,6 +72,14 @@
      clamp() interpolation — 8px up to 1919px, 16px 1920-2559px, 24px at
      2560px+. */
   --gutter: 8px;
+  /* Outer page-edge margins — decoupled from --gutter, which stays
+     dedicated to INTERNAL gaps only (grid column gaps, tile gaps, block
+     gaps, the two-column text-block gap). --margin is exactly 2x
+     --gutter at every step, mirroring its media-query structure below,
+     so wider page margins (needed for the home hero's giant wordmark to
+     have breathing room from the true viewport edge) don't also loosen
+     the site's tight internal spacing rhythm. */
+  --margin: 16px;
   --section-y: clamp(var(--space-lg), 2.4rem + 6.4vw, var(--space-2xl));
   --header-y: clamp(var(--space-xl), 3.2rem + 11.2vw, var(--space-3xl));
 
@@ -99,20 +120,21 @@
   --wordmark-size: 17.5cqw;
 }
 
-/* --gutter step function — later rule wins at 2560px+, where both this
-   and the 1920px query match. Ripples everywhere --gutter is used (page
-   margins, nav padding, the 12-col grid's own gap, detail-page block
-   gaps, feed gaps, scrubber corner inset, mobile menu spacing) with no
+/* --gutter/--margin step functions — later rule wins at 2560px+, where
+   both this and the 1920px query match. Ripples everywhere each token is
+   used (--gutter: internal gaps; --margin: page-edge margins) with no
    per-component changes needed. */
 @media (min-width: 1920px) {
   :root {
     --gutter: 16px;
+    --margin: 32px;
   }
 }
 
 @media (min-width: 2560px) {
   :root {
     --gutter: 24px;
+    --margin: 48px;
   }
 }
 
@@ -190,10 +212,13 @@ video {
   line-height: var(--leading-lg);
 }
 
-.bodyText {
-  font-size: var(--text-body);
+/* Unified small-body role: project-detail paragraphs, main desktop nav
+   links, project card title/services, metadata credits, home intro, and
+   About bio — same size, tracking, and 1.4 leading everywhere it's used. */
+.bodySmall {
+  font-size: var(--text-body-sm);
   letter-spacing: var(--tracking-md);
-  line-height: var(--leading-md);
+  line-height: var(--leading-body-sm);
 }
 
 .caption {
@@ -223,7 +248,7 @@ video {
   width: 100%;
   max-width: var(--container-max);
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  padding-inline: var(--margin);
 }
 
 .blocks {
@@ -234,17 +259,17 @@ video {
 }
 
 /* Site-wide 12-column grid — 4 cols under 768px, 8 cols 768-1199px, 12
-   cols at 1200px+. Column gap and outer margins both reuse --gutter (no
-   new spacing token), matching .container's existing margin behavior.
-   Children opt into a span via .col + a --col-span-* custom property;
-   unset defaults to full width at every breakpoint, so a plain .col
-   with no overrides just behaves like .container. */
+   cols at 1200px+. Column gap stays --gutter (internal spacing); outer
+   margins use --margin (page-edge spacing), matching .container's own
+   split. Children opt into a span via .col + a --col-span-* custom
+   property; unset defaults to full width at every breakpoint, so a plain
+   .col with no overrides just behaves like .container. */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   width: 100%;
   gap: var(--gutter);
-  padding-inline: var(--gutter);
+  padding-inline: var(--margin);
 }
 
 @media (min-width: 768px) {

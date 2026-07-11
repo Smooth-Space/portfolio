@@ -12,12 +12,15 @@
 }
 
 /* Per Figma's measured position — roughly 29% down the screen, not
-   stacked under a header (there is none) and not vertically centered. */
+   stacked under a header (there is none) and not vertically centered.
+   left/right use --margin (page-edge spacing), matching the wider
+   horizontal insets used everywhere else — top: 29% is unrelated to
+   either token, so it's untouched. */
 .links {
   position: absolute;
   top: 29%;
-  left: var(--gutter);
-  right: var(--gutter);
+  left: var(--margin);
+  right: var(--margin);
   display: flex;
   flex-direction: column;
   gap: var(--space-2xs);
@@ -34,13 +37,15 @@
   color: var(--color-fg);
 }
 
-/* Near the very bottom, inset by --gutter on every edge — renders
-   nothing at all when there are no socials (see MobileMenuOverlay.tsx). */
+/* Near the very bottom — bottom stays --gutter (vertical spacing,
+   unrelated to this split), left/right use --margin (page-edge
+   spacing), matching .links above. Renders nothing at all when there
+   are no socials (see MobileMenuOverlay.tsx). */
 .socials {
   position: absolute;
   bottom: var(--gutter);
-  left: var(--gutter);
-  right: var(--gutter);
+  left: var(--margin);
+  right: var(--margin);
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);

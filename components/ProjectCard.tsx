@@ -26,9 +26,9 @@ export function ProjectCard({slug, title, thumbnail, services}: ProjectCardProps
           videoVariant="hover"
         />
       </div>
-      <p className={`bodyText ${styles.title}`}>{title}</p>
+      <p className={`bodySmall ${styles.title}`}>{title}</p>
       {services && services.length > 0 && (
-        <p className={`bodyText ${styles.services}`}>{services.map((service) => service.name).join(', ')}</p>
+        <p className={`bodySmall ${styles.services}`}>{services.map((service) => service.name).join(', ')}</p>
       )}
     </Link>
   )

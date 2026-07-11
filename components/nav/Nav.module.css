@@ -9,7 +9,10 @@
   z-index: 110;
   display: flex;
   align-items: flex-start;
-  padding: var(--gutter);
+  /* --margin on all sides — the nav's own edge offset, consistent across
+     every page (home and internal alike), matching the page-edge margin
+     used everywhere else rather than the tighter internal-gap value. */
+  padding: var(--margin);
   background: transparent;
   transition: transform 0.2s ease, background-color 0.2s ease;
   /* Without this, a full-viewport-width position: fixed element isn't
@@ -56,9 +59,6 @@
   display: none;
   align-items: center;
   gap: 1em;
-  font-size: var(--text-md);
-  letter-spacing: var(--tracking-md);
-  line-height: var(--leading-md);
   color: var(--color-fg-muted);
 }
 

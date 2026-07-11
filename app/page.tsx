@@ -16,8 +16,8 @@ export default async function Home() {
         <div className={styles.introPosition}>
           <div className={styles.introContent}>
             <div>
-              <p className={`bodyText ${styles.introPrimary}`}>The design practice of Jason Wilkins</p>
-              <p className={`bodyText ${styles.introSecondary}`}>Brand, digital, and generative systems</p>
+              <p className={`bodySmall ${styles.introPrimary}`}>The design practice of Jason Wilkins</p>
+              <p className={`bodySmall ${styles.introSecondary}`}>Brand, digital, and generative systems</p>
             </div>
             <Link href="/projects" className={`caption ${styles.viewWork}`}>
               View Work

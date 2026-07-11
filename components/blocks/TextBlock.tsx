@@ -20,7 +20,7 @@ export function TextBlock({block, anchorId}: TextBlockProps) {
           <p className={`heading ${styles.summary}`}>{block.summary}</p>
         </div>
         {block.body && (
-          <div className={`bodyText ${styles.body}`}>
+          <div className={`bodySmall ${styles.body}`}>
             <PortableText value={block.body} />
           </div>
         )}

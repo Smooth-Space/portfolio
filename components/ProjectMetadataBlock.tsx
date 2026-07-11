@@ -88,7 +88,7 @@ export function ProjectMetadataBlock({metadata}: ProjectMetadataBlockProps) {
           {groups.map((group) => (
             <div key={group.label} className={styles.group}>
               <p className={styles.groupLabel}>{group.label}</p>
-              <ul className={styles.list}>
+              <ul className={`bodySmall ${styles.list}`}>
                 {group.items.map((item) => (
                   <li key={item.key}>
                     {item.href ? (

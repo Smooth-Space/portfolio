@@ -21,7 +21,7 @@ export default async function AboutPage() {
       {about?.bio && (
         <div className="grid">
           <div className="col">
-            <p className={`bodyText ${styles.bio}`}>{about.bio}</p>
+            <p className={`bodySmall ${styles.bio}`}>{about.bio}</p>
           </div>
         </div>
       )}

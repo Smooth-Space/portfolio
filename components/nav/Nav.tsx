@@ -112,7 +112,7 @@ export function Nav({navLinks, socials}: NavProps) {
           </Link>
         )}
         <div className={styles.linksGroup}>
-          <nav className={styles.desktopLinks}>
+          <nav className={`bodySmall ${styles.desktopLinks}`}>
             {navLinks.map((item) => (
               <Link key={item._key} href={item.href} className={styles.link}>
                 {item.label}

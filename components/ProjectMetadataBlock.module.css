@@ -58,9 +58,6 @@
   gap: var(--space-3xs);
   list-style: none;
   color: var(--color-fg-muted);
-  font-size: var(--text-sm);
-  letter-spacing: var(--tracking-sm);
-  line-height: var(--leading-sm);
 }
 
 .link {
