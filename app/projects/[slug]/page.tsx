@@ -7,6 +7,7 @@ import {buildMenuItems} from '@/lib/menu'
 import {pickRelatedProjects} from '@/lib/related-projects'
 import {BlockRenderer} from '@/components/blocks/BlockRenderer'
 import {FloatingMenu} from '@/components/FloatingMenu'
+import {HeaderCascadeProvider} from '@/components/HeaderCascadeContext'
 import {ProjectHeader} from '@/components/ProjectHeader'
 import {ProjectMetadataBlock} from '@/components/ProjectMetadataBlock'
 import {RelatedProjects} from '@/components/RelatedProjects'
@@ -44,14 +45,19 @@ export default async function ProjectPage({params}: {params: Promise<{slug: stri
           paddingTop: 'var(--header-y)',
         }}
       >
-        <ProjectHeader title={project.title} intro={project.intro} services={project.services} />
-        <div style={{display: 'flex', flexDirection: 'column', width: '100%', gap: 'var(--section-y)'}}>
-          <BlockRenderer blocks={project.contentBlocks ?? []} anchorIds={anchorIds} />
-          <div id={FOOTER_ID} style={{display: 'flex', flexDirection: 'column', width: '100%', gap: 'var(--section-y)'}}>
-            <ProjectMetadataBlock metadata={project.metadata} />
-            <RelatedProjects projects={relatedProjects} />
+        <HeaderCascadeProvider>
+          <ProjectHeader title={project.title} intro={project.intro} services={project.services} />
+          <div style={{display: 'flex', flexDirection: 'column', width: '100%', gap: 'var(--section-y)'}}>
+            <BlockRenderer blocks={project.contentBlocks ?? []} anchorIds={anchorIds} />
+            <div
+              id={FOOTER_ID}
+              style={{display: 'flex', flexDirection: 'column', width: '100%', gap: 'var(--section-y)'}}
+            >
+              <ProjectMetadataBlock metadata={project.metadata} />
+              <RelatedProjects projects={relatedProjects} />
+            </div>
           </div>
-        </div>
+        </HeaderCascadeProvider>
       </main>
     </>
   )

@@ -5,8 +5,11 @@ import {useEffect, useState} from 'react'
 // N sections -> single active id. Drives the floating menu's active-section
 // highlight. A section counts as active once it passes the upper band of the
 // viewport; the earliest id (in document order) currently intersecting wins.
+// Defaults to the FIRST id rather than null — at the very top of the page,
+// above every section's own observed band, the pill still shows something
+// (the first section) instead of reading as blank/unloaded.
 export function useActiveSection(ids: string[]): string | null {
-  const [active, setActive] = useState<string | null>(null)
+  const [active, setActive] = useState<string | null>(() => ids[0] ?? null)
 
   useEffect(() => {
     if (ids.length === 0) return

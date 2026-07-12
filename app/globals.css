@@ -97,6 +97,19 @@
   --entry-easing: cubic-bezier(0.16, 1, 0.3, 1);
   --entry-distance: 56px;
 
+  /* Medium tier — project title/intro's masked line reveal (see
+     ProjectHeader + hooks/useLineSplit.ts). No offset var: each line
+     translates a full 100% of its OWN rendered height (set directly in
+     .lineInner below), not a fixed px distance, so it scales correctly
+     across line sizes — see lib/motion.ts for why the duration is also
+     mirrored there as a JS constant. Shares --entry-easing above. */
+  --motion-medium-duration: 1.5s;
+
+  /* Small tier — service chips (see ServiceChips). Shares --entry-easing
+     above. */
+  --motion-small-offset: 14px;
+  --motion-small-duration: 0.8s;
+
   /* Color — Radix Sand, mapped by step semantics. Only steps 11/12 are
      used for text; 9-10 are never used for small text (see Radix a11y note). */
   --color-bg: var(--sand-1);
@@ -263,6 +276,69 @@ video {
 
 @media (prefers-reduced-motion: reduce) {
   .entryReveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Medium tier — masked line reveal (title/intro; see ProjectHeader +
+   hooks/useLineSplit.ts). No opacity animation: text stays fully
+   opaque, the reveal is entirely .lineInner sliding up from
+   translateY(100%) (fully hidden below its own line height, not a
+   fixed px distance — scales correctly at any font size) to
+   translateY(0), clipped by .lineMask's overflow: hidden until it
+   arrives. Cascades off an ANCESTOR's .entryRevealVisible (the
+   header's own single useEntryReveal trigger) rather than each line
+   having its own observer — see ProjectHeader for why (title/intro/
+   chips are sequenced as one connected beat, not independently
+   triggered). --entry-delay is set inline per line, in seconds, by
+   ProjectHeader directly (not by useEntryReveal — the delay math here
+   is synchronous/render-time, not resolved lazily at intersection). */
+.lineMask {
+  display: block;
+  overflow: hidden;
+}
+
+.lineInner {
+  display: block;
+  white-space: nowrap;
+  transform: translateY(100%);
+  transition: transform var(--motion-medium-duration) var(--entry-easing) var(--entry-delay, 0s);
+}
+
+.entryRevealVisible .lineInner {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lineInner {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Small tier — service chips (see ServiceChips). Same fade+rise shape
+   as .entryReveal, its own offset/duration, and — like the medium tier
+   above — cascades off an ancestor's .entryRevealVisible (the same
+   header trigger) instead of its own observer, with a base delay
+   (title+intro's combined duration) added in JS so chips read as the
+   third beat. */
+.entryRevealSmall {
+  opacity: 0;
+  transform: translateY(var(--motion-small-offset));
+  transition:
+    opacity var(--motion-small-duration) var(--entry-easing) var(--entry-delay, 0s),
+    transform var(--motion-small-duration) var(--entry-easing) var(--entry-delay, 0s);
+}
+
+.entryRevealVisible .entryRevealSmall {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entryRevealSmall {
     opacity: 1;
     transform: none;
     transition: none;

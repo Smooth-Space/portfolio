@@ -2,11 +2,17 @@
 
 import {MediaSlot} from '@/components/media/MediaSlot'
 import type {ImageBentoData} from '@/sanity/lib/types'
-import {useEntryReveal} from '@/hooks/useEntryReveal'
+import {useHeaderCascadeReveal} from '@/hooks/useHeaderCascadeReveal'
+import {MOTION_LARGE_STAGGER} from '@/lib/motion'
 import styles from './ImageBento.module.css'
 
-// Seconds between slots as they cascade in — see ImageDouble.
-const MEDIA_STAGGER_STEP = 0.1
+interface ImageBentoProps {
+  block: ImageBentoData
+  /** True only for the project's first media block in document order
+   *  (see BlockRenderer) — see useHeaderCascadeReveal for what this
+   *  changes. */
+  isFirstMediaBlock?: boolean
+}
 
 // DOM order is always [tallImage, stackedTop, stackedBottom] — `tallColumn`
 // only swaps which side each renders on via CSS `order`, never touches the
@@ -18,10 +24,10 @@ const MEDIA_STAGGER_STEP = 0.1
 // as ImageWide's .frame. The two stacked slots each get a plain wrapper div
 // so ImageBento.module.css's `.stackedCol > *` selector keeps sizing
 // whatever is the direct child exactly as before.
-export function ImageBento({block}: {block: ImageBentoData}) {
-  const tallRef = useEntryReveal<HTMLDivElement>({delay: 0})
-  const stackedTopRef = useEntryReveal<HTMLDivElement>({delay: MEDIA_STAGGER_STEP})
-  const stackedBottomRef = useEntryReveal<HTMLDivElement>({delay: MEDIA_STAGGER_STEP * 2})
+export function ImageBento({block, isFirstMediaBlock = false}: ImageBentoProps) {
+  const tallRef = useHeaderCascadeReveal<HTMLDivElement>(isFirstMediaBlock, 0)
+  const stackedTopRef = useHeaderCascadeReveal<HTMLDivElement>(isFirstMediaBlock, MOTION_LARGE_STAGGER)
+  const stackedBottomRef = useHeaderCascadeReveal<HTMLDivElement>(isFirstMediaBlock, MOTION_LARGE_STAGGER * 2)
 
   return (
     <div className="grid">

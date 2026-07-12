@@ -5,6 +5,7 @@ import Link from 'next/link'
 import type {MediaSlotData, ServiceRef} from '@/sanity/lib/types'
 import {MediaSlot} from '@/components/media/MediaSlot'
 import {useEntryReveal} from '@/hooks/useEntryReveal'
+import {MOTION_LARGE_STAGGER} from '@/lib/motion'
 import styles from './ProjectCard.module.css'
 
 interface ProjectCardProps {
@@ -33,10 +34,6 @@ function getColumnsPerRow() {
   return COLUMN_BREAKPOINTS.find((breakpoint) => width >= breakpoint.minWidth)?.columns ?? 1
 }
 
-// Seconds between tiles within the same row (see globals.css for the
-// shared opacity/transform duration + easing tokens).
-const ENTRY_STAGGER_STEP = 0.1
-
 // Uniform grid — every tile is the same 1x1 cell, a flat 4:5 box. Title is
 // always visible; services render as plain text (not chips — see
 // ServiceChips, unchanged and still used on the detail page header) that
@@ -49,7 +46,7 @@ export function ProjectCard({slug, title, thumbnail, services, index}: ProjectCa
   const tileRef = useEntryReveal<HTMLAnchorElement>({
     // Resolved at trigger time (not mount) so a resize/breakpoint change
     // before this tile scrolls into view is still reflected.
-    getDelay: () => (index % getColumnsPerRow()) * ENTRY_STAGGER_STEP,
+    getDelay: () => (index % getColumnsPerRow()) * MOTION_LARGE_STAGGER,
   })
 
   return (
