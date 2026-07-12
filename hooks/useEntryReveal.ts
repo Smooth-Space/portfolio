@@ -9,8 +9,14 @@ interface RevealOptions {
   /** Lazy delay resolver (seconds), evaluated at the moment the element
    *  intersects rather than at mount — use this when the delay depends
    *  on viewport-only state (e.g. current column count) that isn't
-   *  stable during SSR/hydration. */
-  getDelay?: () => number
+   *  stable during SSR/hydration, or on the element's OWN rendered
+   *  position (receives it as an argument — e.g. getPositionInRow in
+   *  lib/motion.ts) rather than a React prop that could go stale
+   *  between mount and intersection (this hook's effect is
+   *  intentionally mount-only, so a prop-derived closure captured at
+   *  mount won't reflect a LATER prop change — see FeedTile, whose list
+   *  order shuffles client-side shortly after mount). */
+  getDelay?: (el: HTMLElement) => number
   threshold?: number
   rootMargin?: string
 }
@@ -44,7 +50,7 @@ export function observeAndReveal(
   const observer = new IntersectionObserver(
     ([entry]) => {
       if (!entry.isIntersecting) return
-      const resolvedDelay = getDelay ? getDelay() : delay
+      const resolvedDelay = getDelay ? getDelay(el) : delay
       el.style.setProperty('--entry-delay', `${resolvedDelay}s`)
       el.classList.add('entryRevealVisible')
       observer.unobserve(el)
