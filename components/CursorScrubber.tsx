@@ -32,15 +32,25 @@ interface CursorScrubberProps {
 export function CursorScrubber({items}: CursorScrubberProps) {
   const stills = items.map(getStillUrl).filter((url): url is string => url !== null)
   const [index, setIndex] = useState(0)
-  const [isTouch, setIsTouch] = useState<boolean | null>(null)
+  // Lazy initializer, not a post-mount effect: `typeof window` gates it
+  // safely for SSR (server render leaves this null, same as before), but
+  // on the client it resolves on the FIRST render — no longer a whole
+  // extra render/effect cycle where isTouch is null and neither the
+  // mousemove nor the interval effect below is active yet. That gap was
+  // harmless on a fast desktop but left room for the touch case to lose
+  // a race on a slower device.
+  const [isTouch, setIsTouch] = useState<boolean | null>(() =>
+    typeof window === 'undefined' ? null : window.matchMedia('(pointer: coarse)').matches,
+  )
 
+  // Keeps isTouch live if the pointer type genuinely changes post-mount
+  // (e.g. a mouse/trackpad attached to a tablet) — the lazy initializer
+  // above only captures a snapshot at first render.
   useEffect(() => {
-    // Intentional exception: matchMedia only exists client-side, so this
-    // can't move to the render body without crashing SSR — it has to be
-    // an effect, and the result has to land in state for the two mode
-    // effects below to react to it.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsTouch(window.matchMedia('(pointer: coarse)').matches)
+    const mql = window.matchMedia('(pointer: coarse)')
+    const handleChange = (event: MediaQueryListEvent) => setIsTouch(event.matches)
+    mql.addEventListener('change', handleChange)
+    return () => mql.removeEventListener('change', handleChange)
   }, [])
 
   // Preload the whole still set up front so scrubbing never hits a
