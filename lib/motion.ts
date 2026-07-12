@@ -16,7 +16,7 @@ import {useEffect, useLayoutEffect} from 'react'
 // ImageBento.tsx.
 export const MOTION_LARGE_STAGGER = 0.1 // seconds — media blocks, project card tiles
 export const MOTION_MEDIUM_STAGGER = 0.1 // seconds — title/intro lines
-export const MOTION_SMALL_STAGGER = 0.05 // seconds — service chips
+export const MOTION_SMALL_STAGGER = 0.05 // seconds — service chips, home hero "View Work" button
 
 // Large tier, but a tighter stagger step — the Feed's clothesline grid
 // runs up to 7-per-row (vs. 4 on the project index), and 0.1s across 7

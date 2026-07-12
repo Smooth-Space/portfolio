@@ -110,6 +110,15 @@
   --motion-small-offset: 14px;
   --motion-small-duration: 0.8s;
 
+  /* Hero tier — home hero wordmark, a single soft fade+rise (see
+     HomeHero). The biggest, quietest gesture on the site — err toward
+     slow; lengthen --motion-hero-duration-transform further if it
+     should feel even more like settling than arriving. Shares
+     --entry-easing above. */
+  --motion-hero-offset: 56px;
+  --motion-hero-duration-opacity: 1.6s;
+  --motion-hero-duration-transform: 2.8s;
+
   /* Color — Radix Sand, mapped by step semantics. Only steps 11/12 are
      used for text; 9-10 are never used for small text (see Radix a11y note). */
   --color-bg: var(--sand-1);
@@ -274,6 +283,19 @@ video {
   transform: translateY(0);
 }
 
+/* Cascading variant: an .entryReveal element with NO observer of its
+   own (e.g. the home hero's scrubber square, sequenced as a beat off
+   HomeHero's single trigger — see globals.css's medium/small tiers for
+   the same pattern) reveals once an ANCESTOR gets .entryRevealVisible,
+   not itself. Coexists safely with the compound rule above: which one
+   matches depends on whether .entryRevealVisible lands on the SAME
+   element (self-observed — ProjectCard, media blocks, Feed tiles) or
+   an ancestor (cascading) — never both for the same element. */
+.entryRevealVisible .entryReveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .entryReveal {
     opacity: 1;
@@ -339,6 +361,35 @@ video {
 
 @media (prefers-reduced-motion: reduce) {
   .entryRevealSmall {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Hero tier — home hero wordmark, a single soft fade+rise (see
+   HomeHero). One element, no split, no stagger — the whole wordmark
+   moves as a unit. No display override: applied directly to the
+   wordmark's own <h1>, which should keep its natural (block) display
+   rather than being forced into anything else. Cascades off an
+   ancestor's .entryRevealVisible (the hero's own single
+   useEntryReveal trigger), same as the medium/small tiers. */
+.entryRevealHero {
+  opacity: 0;
+  transform: translateY(var(--motion-hero-offset));
+  transition:
+    opacity var(--motion-hero-duration-opacity) var(--entry-easing) var(--entry-delay, 0s),
+    transform var(--motion-hero-duration-transform) var(--entry-easing) var(--entry-delay, 0s);
+  will-change: opacity, transform;
+}
+
+.entryRevealVisible .entryRevealHero {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entryRevealHero {
     opacity: 1;
     transform: none;
     transition: none;
