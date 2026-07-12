@@ -32,6 +32,15 @@ export const MOTION_FEED_STAGGER = 0.05 // seconds — feed tiles
 // only the stagger between beats' starting points is this tight.
 export const MOTION_BEAT_DELAY = 0.1 // seconds
 
+// Mobile menu overlay's exit (see MobileMenuOverlay.tsx) is
+// intentionally asymmetric with its own entrance — arriving is an
+// event, leaving is not. Much shorter duration and tighter stagger
+// than the medium/small tiers' own entrance values, which stay
+// UNCHANGED both for the overlay's own entrance and for every other
+// consumer of those tiers (ProjectHeader, HomeHero, ServiceChips).
+export const OVERLAY_EXIT_DURATION = 0.5 // seconds
+export const OVERLAY_EXIT_STAGGER = 0.08 // seconds
+
 export function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }

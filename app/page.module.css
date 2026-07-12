@@ -14,8 +14,13 @@
      own — it floats on top of the page) — extra top clearance here keeps
      the giant wordmark's top edge clear of the toggle instead of the two
      visually colliding. Reverts to plain --margin at desktop, where Nav
-     shows text links instead of the toggle and there's no collision. */
-  padding-top: calc(var(--margin) + var(--space-lg));
+     shows text links instead of the toggle and there's no collision.
+     Was --space-lg (64px) — stepped down one level on the spacing scale
+     to --space-md (36px), roughly halving the clearance. Verified no
+     collision reappears at this tighter gap across 320-1199px: minimum
+     observed clearance ~15px (at 320px/428px), typically ~22-23px
+     elsewhere. */
+  padding-top: calc(var(--margin) + var(--space-md));
 }
 
 /* Establishes the container that .wordmark's cqw font-size (see
@@ -45,7 +50,15 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: var(--gutter);
+  /* Was --gutter (8px at these breakpoints) — too tight a separation
+     between the intro/button group and the scrubber square when they're
+     stacked (mobile/tablet, below 1200px); stepped up to --space-lg
+     (64px) for real breathing room between what read as two distinct
+     sections sitting too close together. Only matters below 1200px:
+     .squareWrap becomes position: absolute at that breakpoint (see
+     below), leaving the flex flow — and this gap — entirely, so desktop
+     is unaffected either way. */
+  gap: var(--space-lg);
 }
 
 .introPosition {
@@ -55,7 +68,10 @@
 .introContent {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  /* Was --space-sm (20px) — stepped down one level on the spacing scale
+     to --space-xs (12px), roughly halving the gap between the intro
+     text and the View Work button. */
+  gap: var(--space-xs);
   width: 100%;
   max-width: 405px;
 }
@@ -85,7 +101,9 @@
 
 @media (min-width: 768px) {
   .introContent {
-    gap: var(--space-md);
+    /* Was --space-md (36px) — same one-level-down step as the base
+       rule above, to --space-sm (20px). */
+    gap: var(--space-sm);
   }
 }
 

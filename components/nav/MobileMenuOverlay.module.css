@@ -9,6 +9,74 @@
   inset: 0;
   z-index: 100;
   background: var(--color-bg);
+  /* Resting/closed state. Transform is the only ANIMATED property
+     (see .overlayOpen/.overlayClosing below) — visibility flips
+     instantly, at a moment React itself schedules (see
+     MobileMenuOverlay.tsx), so this stays composite-only. will-change
+     primes its own compositing layer, same reasoning as Nav's own
+     fixed full-viewport element. */
+  transform: translateY(-100%);
+  visibility: hidden;
+  will-change: transform;
+}
+
+/* Entrance — slides down from the top immediately (no delay),
+   spatially coherent with the toggle it opens from, which sits in the
+   same top corner. Kept fast (0.28s): a menu transition that lingers
+   reads as obstructive, since the user is actively trying to get
+   somewhere. */
+.overlayOpen {
+  transform: translateY(0);
+  visibility: visible;
+  transition: transform 0.28s var(--entry-easing);
+}
+
+/* Exit — a genuinely different choreography from the entrance, not
+   its mirror image, so it's a separate phase/class rather than just
+   .overlayOpen being removed (see MobileMenuOverlay.tsx for the full
+   sequencing). Still visible throughout: React holds this class
+   applied for exactly as long as the WHOLE exit takes (content +
+   panel), only swapping back to the plain .overlay/closed state (and
+   its visibility: hidden) once everything has genuinely finished —
+   that's what fixes the original bug (visibility snapping in right as
+   the panel's own transition ended, cutting the content's exit short).
+
+   The panel's own slide-up reuses the SAME 0.28s speed as the
+   entrance, just DELAYED (--panel-exit-delay, computed in JS) until
+   the content has had its own head start — links retract first, then
+   the panel. The content itself gets a much faster, tighter exit than
+   its own entrance via the descendant overrides below — arriving is
+   an event, leaving is not — WITHOUT touching the shared
+   --motion-medium-duration/.entryRevealSmall duration every other
+   consumer of those classes still uses unchanged. */
+.overlayClosing {
+  transform: translateY(-100%);
+  visibility: visible;
+  transition: transform 0.28s var(--entry-easing) var(--panel-exit-delay, 0s);
+}
+
+/* :global(...) is required here — .lineInner/.entryRevealSmall are
+   GLOBAL classes (defined in globals.css, applied as plain strings in
+   the TSX), but every bare selector in a CSS Module is scoped/hashed
+   by default. Without :global, this would silently compile to a
+   locally-scoped class no element actually has, and never match
+   anything — exactly what happened on the first pass (confirmed via
+   measurement: the override had no effect, links were still exiting
+   at the full 1.5s entrance duration). */
+.overlayClosing :global(.lineInner) {
+  transition-duration: var(--overlay-exit-duration, 0.3s);
+}
+
+.overlayClosing :global(.entryRevealSmall) {
+  transition-duration: var(--overlay-exit-duration, 0.3s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .overlayOpen,
+  .overlayClosing {
+    transition: none;
+  }
 }
 
 /* Per Figma's measured position — roughly 29% down the screen, not
@@ -26,14 +94,10 @@
   gap: var(--space-2xs);
 }
 
-/* Same size as the hero wordmark (--text-display, maxing at 56px) with
-   its same tight tracking (-0.08em, tighter than any standard tracking
-   step — see .wordmark in globals.css) — not the standard .display
-   utility class, which uses the looser --tracking-2xl (-0.04em). */
+/* Same shared type role as the project detail page's title (.display,
+   composed in the TSX) — same size/tracking/leading/weight, not a
+   parallel set of values. Only color lives here. */
 .link {
-  font-size: var(--text-display);
-  letter-spacing: -0.08em;
-  line-height: var(--leading-2xl);
   color: var(--color-fg);
 }
 

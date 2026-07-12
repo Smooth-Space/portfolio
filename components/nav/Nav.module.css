@@ -14,7 +14,15 @@
      used everywhere else rather than the tighter internal-gap value. */
   padding: var(--margin);
   background: transparent;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  /* Hide/show is a UI response to scroll direction, not a reveal — kept
+     quick (0.35s) so it never visibly lags behind the user's own scroll,
+     but now using the site's signature easing (--entry-easing) instead
+     of a generic ease, so it's not the one motion outside that language.
+     Matches FloatingMenu's pill, the only other "quick UI response"
+     motion already on the same easing/duration pairing. background-color
+     is a separate, more subtle solidify-on-scroll fade — left at its own
+     0.2s ease, not part of this change. */
+  transition: transform 0.35s var(--entry-easing), background-color 0.2s ease;
   /* Without this, a full-viewport-width position: fixed element isn't
      guaranteed its own compositing layer — it can get swept into the
      ordinary document repaint on every scroll tick even though it never
